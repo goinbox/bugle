@@ -1,0 +1,16 @@
+{
+    "prj_name": "bugle-demo",
+    "prj_home": "__ARG__(prj-home)",
+    "user": "__ENV__(USER)",
+    "uid": "__ENV__(UID)",
+    "log_dir": "{{prj_home}}/logs",
+    "front_domain": "{{user}}.bdemo.com",
+    "go_port": "__MATH__(6000+{{uid}})",
+
+    "ngx_data_dir": {
+        "ligang": "/data/nginx",
+        "default": "/usr/local/nginx"
+    },
+
+    "demo_name": "global_demo"
+}

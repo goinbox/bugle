@@ -1,0 +1,11 @@
+*.sw*
+
+tmp
+tags
+logs
+pkg
+
+.idea
+*.iml
+*DS_Store
+.vscode
