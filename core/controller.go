@@ -24,6 +24,9 @@ type BaseContext struct {
 	VarConf *VarConf
 	Args    map[string]string
 
+	LogRequestBody  bool
+	LogResponseBody bool
+
 	env       string
 	routePath string
 	dryRun    bool
@@ -68,8 +71,11 @@ func (bc *BaseContext) DoRequest(req *httpclient.Request) (*httpclient.Response,
 	for field, vs := range req.Header {
 		RequestLogger.Info([]byte(field + ": " + strings.Join(vs, " ")))
 	}
-	RequestLogger.Info([]byte("request-body:"))
-	RequestLogger.Info(req.Body)
+
+	if bc.LogRequestBody {
+		RequestLogger.Info([]byte("request-body:"))
+		RequestLogger.Info(req.Body)
+	}
 
 	if bc.dryRun {
 		RequestLogger.Notice([]byte("end with dry run"))
@@ -90,8 +96,12 @@ func (bc *BaseContext) DoRequest(req *httpclient.Request) (*httpclient.Response,
 	for field, vs := range resp.Header {
 		RequestLogger.Info([]byte(field + ": " + strings.Join(vs, " ")))
 	}
-	RequestLogger.Info([]byte("response-body:"))
-	RequestLogger.Info(resp.Contents)
+
+	if bc.LogResponseBody {
+		RequestLogger.Info([]byte("response-body:"))
+		RequestLogger.Info(resp.Contents)
+	}
+
 	RequestLogger.Notice([]byte("end request"))
 
 	return resp, nil
@@ -128,6 +138,9 @@ type BaseController struct {
 func (bc *BaseController) NewActionContext(req *http.Request, respWriter http.ResponseWriter) controller.ActionContext {
 	return &BaseContext{
 		BaseContext: controller.NewBaseContext(req, respWriter),
+
+		LogRequestBody:  true,
+		LogResponseBody: true,
 
 		savedVars: make(map[string]string),
 	}
