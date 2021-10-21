@@ -12,7 +12,7 @@ import (
 	"github.com/goinbox/gomisc"
 )
 
-func SetLogger(logger, rlogger golog.ILogger) {
+func SetLogger(logger, rlogger golog.Logger) {
 	core.Logger = logger
 	core.RequestLogger = rlogger
 }

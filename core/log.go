@@ -6,8 +6,8 @@ import (
 	"github.com/goinbox/golog"
 )
 
-var Logger golog.ILogger = new(golog.NoopLogger)
-var RequestLogger golog.ILogger = new(golog.NoopLogger)
+var Logger golog.Logger = new(golog.NoopLogger)
+var RequestLogger golog.Logger = new(golog.NoopLogger)
 
 func EmergencyLog(title string, msgs ...interface{}) {
 	Logger.Emergency(makeLogMsg(title, msgs))
@@ -41,6 +41,6 @@ func DebugLog(title string, msgs ...interface{}) {
 	Logger.Debug(makeLogMsg(title, msgs))
 }
 
-func makeLogMsg(title string, msgs []interface{}) []byte {
-	return []byte(title + "\t" + fmt.Sprint(msgs...))
+func makeLogMsg(title string, msgs []interface{}) string {
+	return title + "\t" + fmt.Sprint(msgs...)
 }

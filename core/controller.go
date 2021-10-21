@@ -61,48 +61,48 @@ func (bc *BaseContext) DryRun() bool {
 
 func (bc *BaseContext) DoRequest(req *httpclient.Request) (*httpclient.Response, error) {
 	defer func() {
-		RequestLogger.Notice([]byte("====================="))
+		RequestLogger.Notice("=====================")
 	}()
 
-	RequestLogger.Notice([]byte("start request"))
-	RequestLogger.Info([]byte(req.Method + " " + req.Url))
-	RequestLogger.Info([]byte("host: " + req.Host))
-	RequestLogger.Info([]byte("request-header:"))
+	RequestLogger.Notice("start request")
+	RequestLogger.Info(req.Method + " " + req.Url)
+	RequestLogger.Info("host: " + req.Host)
+	RequestLogger.Info("request-header:")
 	for field, vs := range req.Header {
-		RequestLogger.Info([]byte(field + ": " + strings.Join(vs, " ")))
+		RequestLogger.Info(field + ": " + strings.Join(vs, " "))
 	}
 
 	if bc.LogRequestBody {
-		RequestLogger.Info([]byte("request-body:"))
-		RequestLogger.Info(req.Body)
+		RequestLogger.Info("request-body:")
+		RequestLogger.Info(string(req.Body))
 	}
 
 	if bc.dryRun {
-		RequestLogger.Notice([]byte("end with dry run"))
+		RequestLogger.Notice("end with dry run")
 		return nil, nil
 	}
 
 	client := httpclient.NewClient(httpclient.NewConfig(), Logger)
 	resp, err := client.Do(req, 1)
 	if err != nil {
-		RequestLogger.Error([]byte("end with error: " + err.Error()))
+		RequestLogger.Error("end with error: " + err.Error())
 		return nil, err
 	}
 
-	RequestLogger.Notice([]byte("receive response"))
-	RequestLogger.Info([]byte("time: " + resp.T.String()))
-	RequestLogger.Info([]byte("status-code: " + strconv.Itoa(resp.StatusCode)))
-	RequestLogger.Info([]byte("response-header:"))
+	RequestLogger.Notice("receive response")
+	RequestLogger.Info("time: " + resp.T.String())
+	RequestLogger.Info("status-code: " + strconv.Itoa(resp.StatusCode))
+	RequestLogger.Info("response-header:")
 	for field, vs := range resp.Header {
-		RequestLogger.Info([]byte(field + ": " + strings.Join(vs, " ")))
+		RequestLogger.Info(field + ": " + strings.Join(vs, " "))
 	}
 
 	if bc.LogResponseBody {
-		RequestLogger.Info([]byte("response-body:"))
-		RequestLogger.Info(resp.Contents)
+		RequestLogger.Info("response-body:")
+		RequestLogger.Info(string(resp.Contents))
 	}
 
-	RequestLogger.Notice([]byte("end request"))
+	RequestLogger.Notice("end request")
 
 	return resp, nil
 }
