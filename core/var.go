@@ -130,7 +130,7 @@ func (vc *VarConf) ParseValueByDefined(value string) (string, bool, error) {
 		k := item[1]
 		vs, ok := vc.Vars[k]
 		if ok {
-			DebugLog("var", "find var k:"+k+" in vars")
+			Logger.Debug("find var k:" + k + " in Vars")
 		} else {
 			_, ok := vc.unparsedValues[k]
 			if ok {
@@ -173,13 +173,13 @@ func (vc *VarConf) parseValueByFunc(value string) (string, error) {
 	if len(match) != 0 {
 		switch match[1] {
 		case FuncValueArg:
-			DebugLog("var", "parse value: "+value+" by arg func")
+			Logger.Debug("parse value: " + value + " by arg func")
 			value, err = vc.parseByArgFunc(match[2])
 		case FuncValueEnv:
-			DebugLog("var", "parse value: "+value+" by env func")
+			Logger.Debug("parse value: " + value + " by env func")
 			value, err = vc.parseByEnvFunc(match[2])
 		case FuncValueMath:
-			DebugLog("var", "parse value: "+value+" by math func")
+			Logger.Debug("parse value: " + value + " by math func")
 			value, err = vc.parseByMathFunc(match[2])
 		default:
 			err = errors.New("Not support func " + match[1])

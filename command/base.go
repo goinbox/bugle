@@ -3,9 +3,11 @@ package command
 import (
 	"errors"
 	"flag"
-	"github.com/goinbox/bugle/core"
-	"github.com/goinbox/gomisc"
 	"strings"
+
+	"github.com/goinbox/bugle/core"
+	"github.com/goinbox/golog"
+	"github.com/goinbox/gomisc"
 )
 
 type ICommand interface {
@@ -144,7 +146,7 @@ func (bc *baseCommand) parseVars() error {
 			return nil
 
 		}
-		core.ErrorLog("tmp_var", err.Error())
+		core.Logger.Error("tmp_var error", golog.ErrorField(err))
 	}
 
 	bc.VarConf = core.MergeVarConfs(gvc, evc)

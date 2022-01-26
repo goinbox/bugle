@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+
 	"github.com/goinbox/bugle/core"
 )
 
@@ -29,7 +30,7 @@ type CheckEnvCommand struct {
 }
 
 func (rc *CheckEnvCommand) run() error {
-	core.WarningLog("checkenv", "list")
+	core.Logger.Warning("checkenv list")
 	for name, value := range rc.VarConf.Vars {
 		fmt.Println(name, value)
 	}

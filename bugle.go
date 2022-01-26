@@ -12,9 +12,8 @@ import (
 	"github.com/goinbox/gomisc"
 )
 
-func SetLogger(logger, rlogger golog.Logger) {
+func SetLogger(logger golog.Logger) {
 	core.Logger = logger
-	core.RequestLogger = rlogger
 }
 
 func SetVarDir(varDir string, tmpVarDir string) error {
