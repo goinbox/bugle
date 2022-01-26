@@ -2,10 +2,10 @@ package command
 
 import (
 	"errors"
-	"github.com/goinbox/bugle/core"
-	"github.com/goinbox/gohttp/controller"
-	"github.com/goinbox/gohttp/router"
 	"reflect"
+
+	"github.com/goinbox/bugle/core"
+	"github.com/goinbox/gohttp/router"
 )
 
 const (
@@ -42,36 +42,34 @@ type RequestCommand struct {
 	router router.Router
 }
 
-func (rc *RequestCommand) run() error {
-	if rc.router == nil {
+func (c *RequestCommand) run() error {
+	if c.router == nil {
 		return errors.New("you must set router first")
 	}
 
-	route := rc.router.FindRoute(rc.routePath)
+	route := c.router.FindRoute(c.routePath)
 	if route == nil {
-		return errors.New("no route for " + rc.routePath)
+		return errors.New("no route for " + c.routePath)
 	}
 
-	context := route.Cl.NewActionContext(nil, nil)
-	context.SetValue(core.ContextValueKeyVarConf, rc.VarConf)
-	context.SetValue(core.ContextValueKeyArgs, rc.ExtArgs)
-	context.SetValue(core.ContextValueKeyEnv, rc.Env)
-	context.SetValue(core.ContextValueKeyRoutePath, rc.routePath)
-	context.SetValue(core.ContextValueKeyDryRun, rc.dryRun)
+	action := route.NewActionFunc.Call(c.makeArgsValues())[0].Interface().(core.Action)
 
-	context.BeforeAction()
-	route.ActionValue.Call(rc.makeArgsValues(context, route.Args))
-	context.AfterAction()
+	action.Before()
+	action.Run()
+	action.After()
+	action.Destruct()
 
 	return nil
 }
 
-func (rc *RequestCommand) makeArgsValues(context controller.ActionContext, args []string) []reflect.Value {
-	argsValues := make([]reflect.Value, len(args)+1)
-	argsValues[0] = reflect.ValueOf(context)
-	for i, arg := range args {
-		argsValues[i+1] = reflect.ValueOf(arg)
+func (c *RequestCommand) makeArgsValues() []reflect.Value {
+	params := &core.ActionParams{
+		Env:       c.Env,
+		RoutePath: c.routePath,
+		DryRun:    c.dryRun,
+		VarConf:   c.VarConf,
+		Args:      c.ExtArgs,
 	}
 
-	return argsValues
+	return []reflect.Value{reflect.ValueOf(params)}
 }

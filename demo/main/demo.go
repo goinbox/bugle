@@ -26,32 +26,25 @@ func main() {
 		os.Exit(1)
 	}
 
-	logger := golog.NewSimpleLogger(
-		golog.NewConsoleWriter(),
-		golog.NewConsoleFormater(new(golog.NoopFormater)))
+	w, _ := golog.NewFileWriter("/dev/stdout", 0)
+	logger := golog.NewSimpleLogger(w, golog.NewSimpleFormater())
 
-	w, err := golog.NewFileWriter(prjHome+"/logs/request.log", 0)
+	bugle.SetLogger(logger)
+	err := bugle.SetVarDir(prjHome+"/data/var", prjHome+"/tmp/var")
 	if err != nil {
-		logger.Error([]byte(err.Error()))
+		fmt.Println("bugle.SetVarDir error:", err)
 		os.Exit(1)
 	}
-	rlogger := golog.NewSimpleLogger(w, golog.NewSimpleFormater())
 
-	bugle.SetLogger(logger, rlogger)
-	err = bugle.SetVarDir(prjHome+"/data/var", prjHome+"/tmp/var")
-	if err != nil {
-		logger.Error([]byte(err.Error()))
-	}
-
-	r := router.NewSimpleRouter()
+	r := router.NewRouter()
 	r.MapRouteItems(
-		new(demo.DemoController),
+		new(demo.Controller),
 	)
 
 	bugle.SetRouter(r)
 
 	err = bugle.Run(os.Args[2:])
 	if err != nil {
-		logger.Error([]byte(err.Error()))
+		logger.Error("bugle.Run error", golog.ErrorField(err))
 	}
 }
