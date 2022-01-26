@@ -22,12 +22,12 @@ type Action interface {
 }
 
 type ActionParams struct {
-	env       string
-	routePath string
-	dryRun    bool
+	Env       string
+	RoutePath string
+	DryRun    bool
 
-	varConf *VarConf
-	args    map[string]string
+	VarConf *VarConf
+	Args    map[string]string
 }
 
 type BaseAction struct {
@@ -56,23 +56,23 @@ func (a *BaseAction) Value(key string) interface{} {
 }
 
 func (a *BaseAction) Env() string {
-	return a.params.env
+	return a.params.Env
 }
 
 func (a *BaseAction) RoutePath() string {
-	return a.params.routePath
+	return a.params.RoutePath
 }
 
 func (a *BaseAction) DryRun() bool {
-	return a.params.dryRun
+	return a.params.DryRun
 }
 
 func (a *BaseAction) VarValue(name string) string {
-	return a.params.varConf.Vars[name]
+	return a.params.VarConf.Vars[name]
 }
 
 func (a *BaseAction) ArgValue(name string) string {
-	return a.params.args[name]
+	return a.params.Args[name]
 }
 
 func (a *BaseAction) Before() {
@@ -105,7 +105,7 @@ func (a *BaseAction) DoRequest(req *httpclient.Request) (*httpclient.Response, e
 		Logger.Info(string(req.Body))
 	}
 
-	if a.params.dryRun {
+	if a.params.DryRun {
 		Logger.Notice("end with dry run")
 		return nil, nil
 	}
@@ -141,7 +141,7 @@ func (a *BaseAction) SaveVar(key, value string) {
 
 func (a *BaseAction) saveVars() {
 	tm := make(map[string]string)
-	path := TmpVarPath(a.params.env)
+	path := TmpVarPath(a.params.Env)
 
 	if gomisc.FileExist(path) {
 		err := gomisc.ParseJsonFile(path, &tm)

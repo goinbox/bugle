@@ -29,9 +29,9 @@ type CheckEnvCommand struct {
 	*baseCommand
 }
 
-func (rc *CheckEnvCommand) run() error {
+func (c *CheckEnvCommand) run() error {
 	core.Logger.Warning("checkenv list")
-	for name, value := range rc.VarConf.Vars {
+	for name, value := range c.VarConf.Vars {
 		fmt.Println(name, value)
 	}
 

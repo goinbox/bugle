@@ -57,67 +57,67 @@ func NewBaseCommand() *baseCommand {
 	}
 }
 
-func (bc *baseCommand) AddMustHaveArgs(names ...string) *baseCommand {
+func (c *baseCommand) AddMustHaveArgs(names ...string) *baseCommand {
 	for _, name := range names {
-		bc.mustHaveArgs[name] = true
+		c.mustHaveArgs[name] = true
 	}
 
-	return bc
+	return c
 }
 
-func (bc *baseCommand) SetRunFunc(rf runFunc) *baseCommand {
-	bc.rf = rf
+func (c *baseCommand) SetRunFunc(rf runFunc) *baseCommand {
+	c.rf = rf
 
-	return bc
+	return c
 }
 
-func (bc *baseCommand) Run(args []string) error {
-	err := bc.parseArgs(args)
+func (c *baseCommand) Run(args []string) error {
+	err := c.parseArgs(args)
 	if err != nil {
 		return err
 	}
 
-	for name, _ := range bc.mustHaveArgs {
-		_, ok := bc.existArgs[name]
+	for name, _ := range c.mustHaveArgs {
+		_, ok := c.existArgs[name]
 		if !ok {
 			return errors.New("Must have arg " + name)
 		}
 	}
 
-	if bc.Env != "" {
-		err = bc.parseVars()
+	if c.Env != "" {
+		err = c.parseVars()
 		if err != nil {
 			return err
 		}
 	}
 
-	return bc.rf()
+	return c.rf()
 }
 
-func (bc *baseCommand) parseArgs(args []string) error {
-	bc.Fs.StringVar(&bc.Env, "env", "", "env name")
+func (c *baseCommand) parseArgs(args []string) error {
+	c.Fs.StringVar(&c.Env, "env", "", "env name")
 
-	err := bc.Fs.Parse(args)
+	err := c.Fs.Parse(args)
 	if err != nil {
 		return err
 	}
 
-	bc.Fs.Visit(func(f *flag.Flag) {
-		bc.existArgs[f.Name] = true
+	c.Fs.Visit(func(f *flag.Flag) {
+		c.existArgs[f.Name] = true
 	})
 
-	for _, str := range bc.Fs.Args() {
+	for _, str := range c.Fs.Args() {
 		item := strings.Split(str, "=")
 		if len(item) == 2 {
-			bc.ExtArgs[item[0]] = item[1]
+			c.ExtArgs[item[0]] = item[1]
 		}
 	}
 
 	return nil
 }
 
-func (bc *baseCommand) parseVars() error {
-	gvc, err := core.NewVarConf(core.GlobalVarPath(), bc.ExtArgs)
+func (c *baseCommand) parseVars() error {
+	gvc, err := core.NewVarConf(core.GlobalVarPath(), c.ExtArgs)
 	if err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func (bc *baseCommand) parseVars() error {
 		return err
 	}
 
-	evc, err := core.NewVarConf(core.EnvVarPath(bc.Env), bc.ExtArgs)
+	evc, err := core.NewVarConf(core.EnvVarPath(c.Env), c.ExtArgs)
 	if err != nil {
 		return err
 	}
@@ -137,19 +137,19 @@ func (bc *baseCommand) parseVars() error {
 		return err
 	}
 
-	path := core.TmpVarPath(bc.Env)
+	path := core.TmpVarPath(c.Env)
 	if gomisc.FileExist(path) {
-		tvc, _ := core.NewVarConf(path, bc.ExtArgs)
+		tvc, _ := core.NewVarConf(path, c.ExtArgs)
 		err = tvc.Parse()
 		if err == nil {
-			bc.VarConf = core.MergeVarConfs(gvc, evc, tvc)
+			c.VarConf = core.MergeVarConfs(gvc, evc, tvc)
 			return nil
 
 		}
 		core.Logger.Error("tmp_var error", golog.ErrorField(err))
 	}
 
-	bc.VarConf = core.MergeVarConfs(gvc, evc)
+	c.VarConf = core.MergeVarConfs(gvc, evc)
 
 	return nil
 }

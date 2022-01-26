@@ -47,7 +47,7 @@ type VarConf struct {
 
 func NewVarConf(confPath string, extArgs map[string]string) (*VarConf, error) {
 	if !gomisc.FileExist(confPath) {
-		return nil, errors.New("varConf not exist: " + confPath)
+		return nil, errors.New("VarConf not exist: " + confPath)
 	}
 
 	return &VarConf{
@@ -176,7 +176,7 @@ func (vc *VarConf) parseValueByFunc(value string) (string, error) {
 			Logger.Debug("parse value: " + value + " by arg func")
 			value, err = vc.parseByArgFunc(match[2])
 		case FuncValueEnv:
-			Logger.Debug("parse value: " + value + " by env func")
+			Logger.Debug("parse value: " + value + " by Env func")
 			value, err = vc.parseByEnvFunc(match[2])
 		case FuncValueMath:
 			Logger.Debug("parse value: " + value + " by math func")
@@ -207,7 +207,7 @@ func (vc *VarConf) parseByEnvFunc(envName string) (string, error) {
 	vs = string(shell.RunCmd("echo $" + envName).Output)
 	vs = strings.TrimSpace(vs)
 	if vs == "" {
-		return "", errors.New("Not has env " + envName)
+		return "", errors.New("Not has Env " + envName)
 	}
 
 	return vs, nil
