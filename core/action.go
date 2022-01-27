@@ -42,8 +42,9 @@ type BaseAction struct {
 
 func NewBaseAction(params *ActionParams) *BaseAction {
 	return &BaseAction{
-		params: params,
-		data:   make(map[string]interface{}),
+		params:    params,
+		data:      make(map[string]interface{}),
+		savedVars: make(map[string]string),
 	}
 }
 
