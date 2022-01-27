@@ -79,6 +79,10 @@ func (a *BaseAction) ArgValue(name string) string {
 	return a.params.Args[name]
 }
 
+func (a *BaseAction) ActionParams() *ActionParams {
+	return a.params
+}
+
 func (a *BaseAction) Before() {
 }
 
