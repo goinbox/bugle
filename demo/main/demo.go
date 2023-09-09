@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/goinbox/bugle"
-	"github.com/goinbox/gohttp/router"
 	"github.com/goinbox/golog"
+	"github.com/goinbox/router"
 
 	"github.com/goinbox/bugle/demo/controller/demo"
 )

@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/goinbox/bugle/core"
-	"github.com/goinbox/gohttp/router"
+	"github.com/goinbox/router"
 )
 
 const (

@@ -7,9 +7,9 @@ import (
 
 	"github.com/goinbox/bugle/command"
 	"github.com/goinbox/bugle/core"
-	"github.com/goinbox/gohttp/router"
 	"github.com/goinbox/golog"
 	"github.com/goinbox/gomisc"
+	"github.com/goinbox/router"
 )
 
 func SetLogger(logger golog.Logger) {
